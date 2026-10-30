@@ -53,7 +53,9 @@ PLACEHOLDER = "MODULE-YOU-ARE-NOT-TOUCHING/"
 
 # EDIT THIS LIST. One repository-relative directory per entry, trailing slash.
 PROTECTED_PATHS = [
-    PLACEHOLDER,
+    "billing/",
+    "cli/",
+    "accounts/",
 ]
 
 # Files that must not change whatever the plan says. These are the conventions

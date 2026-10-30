@@ -1,0 +1,16 @@
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Write|Edit|NotebookEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "powershell.exe -NoProfile -NonInteractive -ExecutionPolicy Bypass -File \"D:/cmu/17214/f26-lab08/guardrails/run-protect.ps1\"",
+            "timeout": 30
+          }
+        ]
+      }
+    ]
+  }
+}

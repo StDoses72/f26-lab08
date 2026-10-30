@@ -9,6 +9,9 @@ runtime dependencies on either side. The HTTP server is
 `com.sun.net.httpserver`, the event log is JSON Lines written by hand, and the
 Python package is standard library only.
 
+Lab 8 tools and model: Codex (GPT-6), PowerShell, and Maven.
+Independent refuter reported by the student: Fable (model not supplied).
+
 ## Modules
 
 | Module | What it holds |

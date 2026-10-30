@@ -1,6 +1,8 @@
 package edu.cmu.cs214.campusreserve.core.domain;
 
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -16,7 +18,8 @@ public record Booking(
     TimeInterval interval,
     int attendees,
     BookingStatus status,
-    Instant createdAt) {
+    Instant createdAt,
+    List<BookingModification> history) {
 
     public Booking {
         id = Identifiers.require(id, "booking id");
@@ -28,6 +31,14 @@ public record Booking(
         if (attendees <= 0) {
             throw new IllegalArgumentException("Attendees must be positive: " + attendees);
         }
+        history = List.copyOf(history);
+    }
+
+    /** Builds a booking without modification history. */
+    public Booking(
+        String id, String roomId, String userId, TimeInterval interval,
+        int attendees, BookingStatus status, Instant createdAt) {
+        this(id, roomId, userId, interval, attendees, status, createdAt, List.of());
     }
 
     /** Builds a confirmed booking. */
@@ -38,7 +49,24 @@ public record Booking(
 
     /** Returns a cancelled copy of this booking. */
     public Booking cancelled() {
-        return new Booking(id, roomId, userId, interval, attendees, BookingStatus.CANCELLED, createdAt);
+        return new Booking(id, roomId, userId, interval, attendees, BookingStatus.CANCELLED, createdAt, history);
+    }
+
+    /**
+     * Returns a copy with changed details and one history entry, or this booking
+     * if the details are unchanged. The caller checks authorization and booking
+     * policies before applying this operation.
+     */
+    public Booking modified(TimeInterval newInterval, int newAttendees, Instant modifiedAt) {
+        Objects.requireNonNull(newInterval, "newInterval");
+        Objects.requireNonNull(modifiedAt, "modifiedAt");
+        if (interval.equals(newInterval) && attendees == newAttendees) {
+            return this;
+        }
+        List<BookingModification> updatedHistory = new ArrayList<>(history);
+        updatedHistory.add(new BookingModification(
+            interval, attendees, newInterval, newAttendees, modifiedAt));
+        return new Booking(id, roomId, userId, newInterval, newAttendees, status, createdAt, updatedHistory);
     }
 
     /** Does this booking still hold the room? */
